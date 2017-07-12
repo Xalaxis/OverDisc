@@ -21,7 +21,7 @@ version = "v2.73"  # What version is OverDisc?
 
 
 @client.event
-async def on_ready():
+async def on_ready(): #When bot is connected
     """Runs when the bot is first successfully connected"""
     print('Logged in as')
     print(client.user.name)
