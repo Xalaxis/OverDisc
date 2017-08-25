@@ -18,7 +18,7 @@ overclient = AsyncOWAPI()  # Making local reference to the Overwatch API client 
 
 debug = False  # Is debug mode on?
 development = True # Is this development code (If so only respond to calls from the debug channel)
-version = "v2.73"  # What version is OverDisc?
+version = "v2.76"  # What version is OverDisc?
 builddate= "25/08/2017" #When was this version of OverDisc built
 
 
@@ -90,7 +90,7 @@ async def on_message(message):
                                             await srlog(message, member.nick + ": " + srdiff)
 
                                     except KeyError:
-                                        await discordprint(message, "⚠ Database error ⚠")
+                                        await discordprint(message, "⚠ Database error: Wolfie dun goofed")
                                         print(traceback.print_exc())
                                     if comprank <= 1499:
                                         rank = "Bronze"
@@ -258,8 +258,10 @@ async def on_message(message):
                 print(member.name)
             discordprint(message, "Total members " + str(totalmembers))
 
+        if message.content.startswith("!changelog"):
+            await client.send_message(message.channel, "Not yet implemented but will be eventually \n\n\n\nTest new lines")
     else:
-        print("Error in development checking")
-    if (development and message.channel != discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)): #If we're in development mode and recieve a message from a non-authorized channel
-        print("In development mode -- ignoring message from incorrect channel (#" + str(message.channel) + ")")
+        if (development and message.channel != discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)): #If we're in development mode and recieve a message from a non-authorized channel
+            print("In development mode -- ignoring message from incorrect channel (#" + str(message.channel) + ")")
+
 client.run('MzQ2NjcyNDEwNjQyMzUwMDkx.DIHU4w.VzkqKFoF5kHdFzYnFQu4BJWpc3Q')
