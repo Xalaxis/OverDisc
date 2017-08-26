@@ -12,15 +12,37 @@ import calendar
 import traceback
 import matplotlib.pyplot as plt
 import numpy as np
+from github import Github
+
+try:
+    with open("config.json", "r") as rawjson: #Load config file
+        configfile = json.loads(rawjson.read())
+except json.JSONDecodeError:
+    print("Config file corrupted.  Recopy from template and try again.")
+    exit()
+
+debug = False  # Is debug mode on?
+# development = True # Is this development code (If so only respond to calls from the debug channel)
+# version = "v2.76"  # What version is OverDisc?
+# builddate= "25/08/2017" #When was this version of OverDisc built
+
+development = configfile['Development'] # Is this development code (If so only respond to calls from the debug channel)
+
+def getrepo():
+    g = Github(configfile['Github-token']) #Connect to GitHub with token authentication
+    if development:
+        re = g.get_repo("Xalaxis/OverDisc/tree/development")
+    else:
+        re = g.get_repo("Xalaxis/OverDisc/tree/master")
+    return re
+
+tags = getrepo().get_tags() #Get tags from the repo
+print(tags[0].name) #Latest tag
+version = tags[0].name
+
 
 client = discord.Client()  # Making local reference to the Discord client object
 overclient = AsyncOWAPI()  # Making local reference to the Overwatch API client object
-
-debug = False  # Is debug mode on?
-development = True # Is this development code (If so only respond to calls from the debug channel)
-version = "v2.76"  # What version is OverDisc?
-builddate= "25/08/2017" #When was this version of OverDisc built
-
 
 @client.event
 async def on_ready(): #When bot is connected
