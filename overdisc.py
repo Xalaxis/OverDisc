@@ -13,6 +13,7 @@ import traceback
 import matplotlib.pyplot as plt
 import numpy as np
 from github import Github
+from distutils.version import LooseVersion
 
 try:
     with open("config.json", "r") as rawjson: #Load config file
@@ -23,22 +24,52 @@ except json.JSONDecodeError:
 
 debug = False  # Is debug mode on?
 # development = True # Is this development code (If so only respond to calls from the debug channel)
-# version = "v2.76"  # What version is OverDisc?
-# builddate= "25/08/2017" #When was this version of OverDisc built
-
+version = configfile['Version']  # What version is OverDisc?
+builddate= configfile['Builddate'] #When was this version of OverDisc built
 development = configfile['Development'] # Is this development code (If so only respond to calls from the debug channel)
 
 def getrepo():
     g = Github(configfile['Github-token']) #Connect to GitHub with token authentication
-    if development:
-        re = g.get_repo("Xalaxis/OverDisc/tree/development")
-    else:
-        re = g.get_repo("Xalaxis/OverDisc/tree/master")
+    re = g.get_repo("Xalaxis/OverDisc")
     return re
 
-tags = getrepo().get_tags() #Get tags from the repo
-print(tags[0].name) #Latest tag
-version = tags[0].name
+async def checkupdate(message):
+    updateavailable = False
+    updateschecked = []
+    releases = getrepo().get_releases() #Get releases from the repo
+    for release in releases:
+        if development:
+            await discordprint(message, "Checking development releases...")
+            if release.raw_data['target_commitish'] == "development":
+                updateschecked = updateschecked + [release.tag_name]
+                if LooseVersion(release.tag_name) > LooseVersion(version):
+                    await discordprint(message, "Update Available")
+                    await discordprint(message,"Current Version: " + version + "\nRemote version: " + release.tag_name)
+                    updateavailable = True
+                else:
+                    print("Ignoring old release")
+            if updateavailable == False:
+                await discordprint(message, "No new release found")
+                if debug:
+                    await discordprint(message, "Releases checked:")
+                    for i in updateschecked:
+                        await discordprint(message, i)
+        else:
+            await discordprint(message, "Checking mainline releases...")
+            if release.raw_data['target_commitish'] == "master":
+                updateschecked = updateschecked + [release.tag_name]
+                if LooseVersion(release.tag_name) > LooseVersion(version):
+                    await discordprint(message, "Update Available")
+                    await discordprint(message,"Current Version: " + version + "\nRemote version: " + release.tag_name)
+                    updateavailable = True
+                else:
+                    print("Ignoring old release")
+            if updateavailable == False:
+                await discordprint(message, "No new release found")
+                if debug:
+                    await discordprint(message, "Releases checked:")
+                    for i in updateschecked:
+                        await discordprint(message, i)
 
 
 client = discord.Client()  # Making local reference to the Discord client object
@@ -282,6 +313,9 @@ async def on_message(message):
 
         if message.content.startswith("!changelog"):
             await client.send_message(message.channel, "Not yet implemented but will be eventually \n\n\n\nTest new lines")
+
+        if message.content.startswith("!updatecheck"):
+            await checkupdate(message)
     else:
         if (development and message.channel != discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)): #If we're in development mode and recieve a message from a non-authorized channel
             print("In development mode -- ignoring message from incorrect channel (#" + str(message.channel) + ")")
