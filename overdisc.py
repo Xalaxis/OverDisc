@@ -320,4 +320,4 @@ async def on_message(message):
         if (development and message.channel != discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)): #If we're in development mode and recieve a message from a non-authorized channel
             print("In development mode -- ignoring message from incorrect channel (#" + str(message.channel) + ")")
 
-client.run('MzQ2NjcyNDEwNjQyMzUwMDkx.DIHU4w.VzkqKFoF5kHdFzYnFQu4BJWpc3Q')
+client.run(configfile['Discord-token'])

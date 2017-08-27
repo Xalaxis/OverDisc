@@ -1,5 +1,6 @@
 {
   "Github-token": "token",
+  "Discord-token": "token",
   "Development": true,
   "Version": "v2.76",
   "Builddate": "26/08/2017"
