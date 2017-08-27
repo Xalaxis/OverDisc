@@ -24,8 +24,8 @@ except json.JSONDecodeError:
 
 debug = False  # Is debug mode on?
 # development = True # Is this development code (If so only respond to calls from the debug channel)
-version = "v2.78"  # What version is OverDisc?
-builddate= "27/08/2017 18:05" #When was this version of OverDisc built
+version = "v2.8"  # What version is OverDisc?
+builddate= "27/08/2017 18:51" #When was this version of OverDisc built
 development = configfile['Development'] # Is this development code (If so only respond to calls from the debug channel)
 
 def getrepo():
