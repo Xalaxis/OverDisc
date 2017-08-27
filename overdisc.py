@@ -111,7 +111,7 @@ async def on_message(message):
     """Runs when the bot recieves a message"""
     global debug
     server = message.server  # Localizing the server the message is from as 'server'
-    if (development and message.channel == discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)) or development != True :
+    if (development and message.channel == discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)) or (development != True and message.channel != discord.utils.get(server.channels, name="temporarytesting", type=discord.ChannelType.text)):
         if message.content.startswith('!updateroles'):  # If this is the update rank command
             if message.content.endswith('!dailyupdate'):
                 dailyupdate = True
