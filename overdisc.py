@@ -97,6 +97,14 @@ async def discordprint(message, text): #Print the message 'text' and send it to 
     print(text)
     await client.send_message(message.channel, text)
 
+async def candrop(oldrank):
+    if oldrank == "Bronze" or "Silver" or "Gold" or "Platinum" or "Diamond": #Ranks that can't drop
+        return False
+    if oldrank == "": #We don't have any rank in the database
+        return True
+    else:
+        if oldrank == "Master" or "Grandmaster": #Ranks that can drop
+            return True
 
 @client.event
 async def on_message(message):
@@ -141,33 +149,54 @@ async def on_message(message):
                                             srdata[member.nick][calendar.day_name[my_date.weekday()]] - srdata[member.nick][calendar.day_name[yesterday_date.weekday()]]) + ")"
                                         if dailyupdate:
                                             await srlog(message, member.nick + ": " + srdiff)
-
-                                    except KeyError:
+                                    except KeyError: #Entry doesn't exist
                                         await discordprint(message, "⚠ Database error: Wolfie dun goofed")
                                         print(traceback.print_exc())
+
+                                    rank = srdata[member.nick]['Rank']# Collect rank from storage
                                     if comprank <= 1499:
-                                        rank = "Bronze"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Bronze"))
+                                        if candrop(rank): #If user can fall to Bronze
+                                            rank = "Bronze"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Bronze"))
+                                        else:
+                                            ranklocked = True
                                     elif comprank <= 1999:
-                                        rank = "Silver"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Silver"))
+                                        if candrop(rank) or rank == "Bronze": #If user can fall to Silver or they are climbing from Bronze
+                                            rank = "Silver"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Silver"))
+                                        else:
+                                            ranklocked = True
                                     elif comprank <= 2499:
-                                        rank = "Gold"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Gold"))
+                                        if candrop(rank) or rank == "Bronze" or rank == "Silver":
+                                            rank = "Gold"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Gold"))
+                                        else:
+                                            ranklocked = True
                                     elif comprank <= 2999:
-                                        rank = "Platinum"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Platinum"))
+                                        if candrop(rank) or rank == "Bronze" or rank == "Silver" or rank == "Gold":
+                                            rank = "Platinum"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Platinum"))
+                                        else:
+                                            ranklocked = True
                                     elif comprank <= 3499:
-                                        rank = "Diamond"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Diamond"))
+                                        if candrop(rank) or rank == "Bronze" or rank == "Silver" or rank == "Gold" or rank == "Platinum":
+                                            rank = "Diamond"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Diamond"))
+                                        else:
+                                            ranklocked = True
                                     elif comprank <= 3999:
-                                        rank = "Master"
-                                        await client.replace_roles(member, discord.utils.get(server.roles, name="Master"))
+                                        if candrop(rank) or rank == "Bronze" or rank == "Silver" or rank == "Gold" or rank == "Platinum" or rank == "Diamond":
+                                            rank = "Master"
+                                            await client.replace_roles(member, discord.utils.get(server.roles, name="Master"))
+                                        else:
+                                            ranklocked = True
                                     else:
-                                        rank = "Grandmaster"
+                                        rank = "Grandmaster" #No need to check as max rank
                                         await client.replace_roles(member, discord.utils.get(server.roles, name="Grandmaster"))
                                     if debug:
                                         await discordprint(message, str(member.nick) + ": " + str(comprank) + " | " + rank + " | " + srdiff)
+                                        if ranklocked:
+                                            await discordprint(message, "Rank locked")
                                     srdata[member.nick]['Rank'] = rank  # Assign current rank to storage
                                 else:
                                     rank = "No current rank (But has played competitive)"
