@@ -2,6 +2,6 @@ rankbar.png
 rankpie.png
 /.idea
 /.vscode
-/bot/config.json
+/config.json
 /bot/sr.json
 /.cache/
