@@ -86,7 +86,6 @@ async def on_ready(): #When bot is connected
     print('Invite: https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=402653184'.format(client.user.id))
     print('------')
 
-
 async def srlog(message, text): #Send the contents of 'text' to the server channel #srlog from the server associated with 'message'
     print("Logging to #srlog")
     server = message.server
