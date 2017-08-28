@@ -19,8 +19,9 @@ try:
     with open("config.json", "r") as rawjson: #Load config file
         configfile = json.loads(rawjson.read())
 except json.JSONDecodeError:
-    print("Config file corrupted.  Recopy from template and try again.")
-    exit()
+    exit("Config file corrupted.  Recopy from template and try again.")
+except FileNotFoundError:
+    exit("Config file missing.  Please rename configtemplate.json to config.json, edit and restart bot.")
 
 debug = False  # Is debug mode on?
 # development = True # Is this development code (If so only respond to calls from the debug channel)
