@@ -5,3 +5,4 @@ rankpie.png
 /config.json
 /bot/sr.json
 /.cache/
+*.code-workspace
