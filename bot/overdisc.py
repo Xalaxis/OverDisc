@@ -24,7 +24,6 @@ except FileNotFoundError:
     exit("Config file missing.  Please rename configtemplate.json to config.json, edit and restart bot.")
 
 debug = False  # Is debug mode on?
-# development = True # Is this development code (If so only respond to calls from the debug channel)
 version = "v2.8"  # What version is OverDisc?
 builddate= "27/08/2017 18:51" #When was this version of OverDisc built
 development = configfile['Development'] # Is this development code (If so only respond to calls from the debug channel)
@@ -35,10 +34,11 @@ def getrepo():
     return re
 
 async def checkupdate(message):
+    """Checks whether an update is available to the current version of the bot running"""
     updateavailable = False
     updateschecked = []
     releases = getrepo().get_releases() #Get releases from the repo
-    for release in releases:
+    for release in releases: #TODO: Move this loop into the checking for releases so we don't  repeat prints.  Use break?
         if development:
             await discordprint(message, "Checking development releases...")
             if release.raw_data['target_commitish'] == "development":
@@ -92,19 +92,9 @@ async def srlog(message, text): #Send the contents of 'text' to the server chann
     server = message.server
     await client.send_message(discord.utils.get(server.channels, name="srlog", type=discord.ChannelType.text), text)
 
-
 async def discordprint(message, text): #Print the message 'text' and send it to the same channel we recieved our message from originally
     print(text)
     await client.send_message(message.channel, text)
-
-async def candrop(oldrank):
-    if oldrank == "Bronze" or "Silver" or "Gold" or "Platinum" or "Diamond": #Ranks that can't drop
-        return False
-    if oldrank == "": #We don't have any rank in the database
-        return True
-    else:
-        if oldrank == "Master" or "Grandmaster": #Ranks that can drop
-            return True
 
 @client.event
 async def on_message(message):
