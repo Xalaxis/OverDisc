@@ -2,3 +2,4 @@ overwatch-api
 discord.py
 matplotlib
 pygithub
+pytest

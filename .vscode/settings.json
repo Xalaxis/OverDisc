@@ -1,6 +1,12 @@
 {
     "cSpell.words": [
-        "Overwatch"
+        "OWAPI",
+        "Overwatch",
+        "Xalaxis",
+        "asyncio",
+        "getrepo",
+        "numpy",
+        "pyplot"
     ],
     "todohighlight.include": [
         "**/*.js",
@@ -12,5 +18,11 @@
         "**/*.css",
         "**/*.scss",
         "**/*.py"
-    ]
+    ],
+    "python.unitTest.pyTestArgs": [
+        "tests"
+    ],
+    "python.unitTest.pyTestEnabled": true,
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false
 }
